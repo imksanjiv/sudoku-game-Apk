@@ -18,12 +18,19 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Download Gradle and Build APK
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Download and Install Gradle
       run: |
         cd sudoku-game
         wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
         unzip -q gradle-8.5-bin.zip
-        export PATH=$PWD/gradle-8.5/bin:$PATH
+        echo "$PWD/gradle-8.5/bin" >> $GITHUB_PATH
+
+    - name: Build Debug APK with Gradle
+      run: |
+        cd sudoku-game
         gradle assembleDebug
 
     - name: Upload APK Artifact
