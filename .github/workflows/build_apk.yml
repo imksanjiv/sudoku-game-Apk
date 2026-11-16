@@ -1,3 +1,4 @@
+YAML
 name: Build Android APK
 
 on:
@@ -21,16 +22,13 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       with:
-        build-tools-version: 34.0.0
-        api-level: 34
+        packages: 'platforms;android-34 build-tools;34.0.0'
 
     - name: Build with Gradle
-      env:
-        ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
       run: |
         cd sudoku-game
         chmod +x gradlew || true
-        # If gradlew isn't present, use standard gradle with downloaded wrapper
+        # If gradle wrapper isn't found, download and initialize it
         if [ ! -f "gradlew" ]; then
           gradle wrapper
         fi
