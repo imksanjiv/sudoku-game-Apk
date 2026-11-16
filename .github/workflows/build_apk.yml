@@ -20,18 +20,21 @@ jobs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
+      with:
+        build-tools-version: 34.0.0
+        api-level: 34
 
-    - name: Download and Install Gradle
+    - name: Build with Gradle
+      env:
+        ANDROID_HOME: ${{ steps.setup-android.outputs.android-home }}
       run: |
         cd sudoku-game
-        wget https://services.gradle.org/distributions/gradle-8.5-bin.zip
-        unzip -q gradle-8.5-bin.zip
-        echo "$PWD/gradle-8.5/bin" >> $GITHUB_PATH
-
-    - name: Build Debug APK with Gradle
-      run: |
-        cd sudoku-game
-        gradle assembleDebug
+        chmod +x gradlew || true
+        # If gradlew isn't present, use standard gradle with downloaded wrapper
+        if [ ! -f "gradlew" ]; then
+          gradle wrapper
+        fi
+        ./gradlew assembleDebug
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
